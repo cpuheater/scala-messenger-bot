@@ -34,9 +34,9 @@ object BotApp extends App with FBRoute with LazyLogging {
 
   implicit val timeout = Timeout(30.seconds)
 
-  val clientRouteLogged = DebuggingDirectives.logRequestResult("Client", Logging.InfoLevel)(routes)
+  val routeLogging = DebuggingDirectives.logRequestResult("RouteLogging", Logging.InfoLevel)(routes)
 
-  Http().bindAndHandle(clientRouteLogged, "localhost", 8080)
+  Http().bindAndHandle(routeLogging, "localhost", 8080)
   logger.info("Starting")
 
 }
