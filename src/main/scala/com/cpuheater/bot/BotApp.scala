@@ -16,7 +16,7 @@ import scala.concurrent.duration._
 object BotApp extends App with FBRoute with LazyLogging {
 
   val decider: Supervision.Decider = { e =>
-    logger.error("Unhandled exception in stream", e)
+    logger.error(s"Exception in stream $e")
     Supervision.Stop
   }
 
