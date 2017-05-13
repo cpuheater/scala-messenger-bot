@@ -16,11 +16,11 @@ import com.cpuheater.bot.json.BotJson._
 
 trait FBRoute extends  Directives with LazyLogging with RouteSupport {
 
-  implicit def actorSystem: ActorSystem
-  implicit def ec: ExecutionContext
-  implicit val materializer: ActorMaterializer
+  protected implicit def actorSystem: ActorSystem
+  protected implicit def ec: ExecutionContext
+  protected implicit val materializer: ActorMaterializer
 
-  val fbService = FBService
+  private val fbService = FBService
 
   val fbRoute = {
     extractRequest { request: HttpRequest =>
@@ -29,17 +29,17 @@ trait FBRoute extends  Directives with LazyLogging with RouteSupport {
             parameters("hub.verify_token", "hub.mode", "hub.challenge") {
               (token, mode, challenge) =>
                 complete {
-                  ToResponseMarshallable(fbService.verifyToken(token, mode, challenge))
+                  fbService.verifyToken(token, mode, challenge)
                 }
             }
           }
         } ~
         post {
-          authenticate(request)(materializer, ec) {
+          verifyPayload(request)(materializer, ec) {
             path("webhook") {
               entity(as[FBPObject]) { fbObject =>
                 complete {
-                  ToResponseMarshallable(fbService.handleMessage(fbObject))
+                  fbService.handleMessage(fbObject)
                 }
               }
             }

@@ -22,9 +22,9 @@ import scala.concurrent.duration._
 trait RouteSupport extends LazyLogging with Directives {
 
 
-  def authenticate(req: HttpRequest)(implicit materializer: Materializer, ec: ExecutionContext): Directive0 = {
+  def verifyPayload(req: HttpRequest)(implicit materializer: Materializer, ec: ExecutionContext): Directive0 = {
 
-    def verify(payload: Array[Byte], secret: String, expected: String): Boolean = {
+    def isValid(payload: Array[Byte], secret: String, expected: String): Boolean = {
       val secretKeySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA1")
       val mac = Mac.getInstance("HmacSHA1")
       mac.init(secretKeySpec)
@@ -45,7 +45,7 @@ trait RouteSupport extends LazyLogging with Directives {
         val elements = token.split("=")
         val method = elements(0)
         val signaturedHash = elements(1)
-        if(verify(payload.getBytes, BotConfig.fb.appSecret, signaturedHash))
+        if(isValid(payload.getBytes, BotConfig.fb.appSecret, signaturedHash))
           pass
         else {
           logger.error(s"Tokens are different, expected ${signaturedHash}")
