@@ -12,7 +12,7 @@ object BotConfig {
 
     val appSecret = fb.getString("appSecret")
     val pageAccessToken = fb.getString("pageAccessToken")
-    val validationToken = fb.getString("validationToken")
+    val verifyToken = fb.getString("verifyToken")
     val responseUri = fb.getString("responseUri")
   }
 

@@ -21,8 +21,8 @@ import scala.concurrent.duration._
 
 trait RouteSupport extends LazyLogging with Directives {
 
-
-  def verifyPayload(req: HttpRequest)(implicit materializer: Materializer, ec: ExecutionContext): Directive0 = {
+  def verifyPayload(req: HttpRequest)
+                   (implicit materializer: Materializer, ec: ExecutionContext): Directive0 = {
 
     def isValid(payload: Array[Byte], secret: String, expected: String): Boolean = {
       val secretKeySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA1")
@@ -40,7 +40,8 @@ trait RouteSupport extends LazyLogging with Directives {
 
     req.headers.find(_.name == "X-Hub-Signature").map(_.value()) match {
       case Some(token) =>
-        val payload = Await.result(req.entity.toStrict(5 seconds).map(_.data.decodeString("UTF-8")), 5 second)
+        val payload =
+          Await.result(req.entity.toStrict(5 seconds).map(_.data.decodeString("UTF-8")), 5 second)
         logger.info(s"Receive token ${token} and payload ${payload}")
         val elements = token.split("=")
         val method = elements(0)
@@ -53,7 +54,7 @@ trait RouteSupport extends LazyLogging with Directives {
         }
 
       case None =>
-        logger.error(s"Token is not defined, Couldn't validate the signature ${req.headers.find(_.name == "x-hub-signature")}")
+        logger.error(s"Token X-Hub-Signature is not defined")
         complete(StatusCodes.Forbidden)
     }
 
