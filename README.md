@@ -1,3 +1,2 @@
-Facebook messenger bot in Scala.
-
-Tutorial how to build messenger bot in Scala https://www.cpuheater.com/build-facebook-messenger-bot-in-scala/
+Facebook Messenger Bot in Scala.
+Tutorial how to build Messenger Bot in Scala https://www.cpuheater.com/scala/build-facebook-messenger-bot-in-scala/
