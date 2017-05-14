@@ -24,27 +24,27 @@ trait FBRoute extends  Directives with LazyLogging with RouteSupport {
 
   val fbRoute = {
     extractRequest { request: HttpRequest =>
-        get {
-          path("webhook") {
-            parameters("hub.verify_token", "hub.mode", "hub.challenge") {
-              (token, mode, challenge) =>
-                complete {
-                  fbService.verifyToken(token, mode, challenge)
-                }
-            }
+      get {
+        path("webhook") {
+          parameters("hub.verify_token", "hub.mode", "hub.challenge") {
+            (token, mode, challenge) =>
+              complete {
+                fbService.verifyToken(token, mode, challenge)
+              }
           }
-        } ~
-        post {
-          verifyPayload(request)(materializer, ec) {
-            path("webhook") {
-              entity(as[FBPObject]) { fbObject =>
-                complete {
-                  fbService.handleMessage(fbObject)
-                }
+        }
+      } ~
+      post {
+        verifyPayload(request)(materializer, ec) {
+          path("webhook") {
+            entity(as[FBPObject]) { fbObject =>
+              complete {
+                fbService.handleMessage(fbObject)
               }
             }
           }
         }
+      }
     }
   }
 }
