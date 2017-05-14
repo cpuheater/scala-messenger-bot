@@ -36,8 +36,6 @@ trait RouteSupport extends LazyLogging with Directives {
       computedHash == expected
     }
 
-    req.headers.foreach( h => println(h.name()))
-
     req.headers.find(_.name == "X-Hub-Signature").map(_.value()) match {
       case Some(token) =>
         val payload =
@@ -54,7 +52,7 @@ trait RouteSupport extends LazyLogging with Directives {
         }
 
       case None =>
-        logger.error(s"Token X-Hub-Signature is not defined")
+        logger.error(s"X-Hub-Signature is not defined")
         complete(StatusCodes.Forbidden)
     }
 
